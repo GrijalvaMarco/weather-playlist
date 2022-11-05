@@ -13,8 +13,8 @@ class WeatherController extends Controller
      */
     public function index($city)
     {
-        $data = ResponseService::format($city);
+        $response = ResponseService::format($city);
         // echo($data);
-        return response()->json($data);
+        return response()->json($response,$response['code']);
     }
 }
