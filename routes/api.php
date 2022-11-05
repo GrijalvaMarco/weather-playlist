@@ -18,4 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('playlist/recommended/{city}', [WeatherController::class, 'index']);
+Route::get('playlist/recommended', [WeatherController::class, 'index']);

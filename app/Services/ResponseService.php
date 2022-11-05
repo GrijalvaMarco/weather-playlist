@@ -1,34 +1,32 @@
 <?php
 
 namespace App\Services;
-
+use App\Http\Requests\WeatherGetRequest;
 class ResponseService
 {
-    public static function format(string $city)
+    public static function format(WeatherGetRequest $request)
     {
         $dataFetch = new DataFetchService();
         $response = [];
-        $weatherResponse = $dataFetch->getCurrentWeather($city);
-       
-        if($weatherResponse['success'] == true) {
+        $weather_response = $dataFetch->getCurrentWeather($request);
+
+        if($weather_response['success'] == true) {
+            $recommended_playlist = [];     
+
             $response = [
                 'success' => true,
-                'city' => $city,
-                'current_weather' => $weatherResponse['data'],
-                'recommended_playlist' => [],
-                'code' => $weatherResponse['code']
+                'current_weather' => $weather_response['data'],
+                'recommended_playlist' => $recommended_playlist,
+                'code' => $weather_response['code']
                 ];
         } else {
             $response = [
                 'success' => false,
-                'city' => $city,
-                'error_message' => $weatherResponse['message'],
-                'code' => $weatherResponse['code']
+                'error_message' => $weather_response['message'],
+                'code' => $weather_response['code']
                 ];
         }
-        // $weather = json_decode($weatherResp)->main->temp;
 
-        // print_r($weatherResp);
         return $response;
         
     }
