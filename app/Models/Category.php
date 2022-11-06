@@ -31,4 +31,9 @@ class Category extends Model
     protected $casts = [
         'icons' => 'json',
     ];
+
+    public function playlists()
+    {
+        return $this->hasMany(Playlist::class);
+    }
 }

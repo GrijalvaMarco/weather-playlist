@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Category;
+use App\Models\Playlist;
+use App\Models\Track;
 use App\Repository\SpotifyRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -24,8 +27,9 @@ class DataFetchService
         // } else {
         //     $url = "https://api.openweathermap.org/data/2.5/weather?lat=".$request->lat."&lon=".$request->lon."&units=metric&appid=".env('OPENWEATHER_API_KEY');
         // }
-        $categories = $this->repository->all();
-        $response = ['success' => true, 'data' => $categories, 'code' => 200];
+        // $categories = $this->repository->all();
+        $playlists = Track::with('playlist','playlist.category')->get();
+        $response = ['success' => true, 'data' => $playlists, 'code' => 200];
         // try {
         //     $response = json_decode($this->client->get($url)->getBody());
         //     $response = ['success' => true, 'data' => $response->main->temp, 'code' => 200];
