@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Category;
-use App\Models\Playlist;
-use App\Models\Track;
+use App\Enums\CategoryType;
 use App\Repository\SpotifyRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -21,23 +19,40 @@ class DataFetchService
 
     public function getCurrentWeather(WeatherGetRequest $request)
     {
-        // $client = new Client();
-        // if(isset($request->city)){
-        //     $url = "https://api.openweathermap.org/data/2.5/weather?q=".$request->city."&units=metric&appid=".env('OPENWEATHER_API_KEY');
-        // } else {
-        //     $url = "https://api.openweathermap.org/data/2.5/weather?lat=".$request->lat."&lon=".$request->lon."&units=metric&appid=".env('OPENWEATHER_API_KEY');
-        // }
-        // $categories = $this->repository->all();
-        $playlists = Track::with('playlist','playlist.category')->get();
-        $response = ['success' => true, 'data' => $playlists, 'code' => 200];
-        // try {
-        //     $response = json_decode($this->client->get($url)->getBody());
-        //     $response = ['success' => true, 'data' => $response->main->temp, 'code' => 200];
-        // } catch (RequestException $e) {
-        //     // throw new Exception($e);
-        //     $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
-        // }
+        $client = new Client();
+        if(isset($request->city)){
+            $url = "https://api.openweathermap.org/data/2.5/weather?q=".$request->city."&units=metric&appid=".env('OPENWEATHER_API_KEY');
+        } else {
+            $url = "https://api.openweathermap.org/data/2.5/weather?lat=".$request->lat."&lon=".$request->lon."&units=metric&appid=".env('OPENWEATHER_API_KEY');
+        }
+        
+        try {
+            $response = json_decode($client->get($url)->getBody());
+            $response = ['success' => true, 'data' => $response->main->temp, 'code' => 200];
+        } catch (RequestException $e) {
+            // throw new Exception($e);
+            $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
+        }
         return $response;
+    }
+
+    /**
+     *@param string $weather = temperature in celsius grades ejem:14.92
+     * @return array
+     */
+    public function getRecommendedPlaylist($weather)
+    {
+        if ($weather > 30) {
+            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::PARTY);
+        } elseif ($weather >= 15 && $weather <= 30) {
+            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::POP);
+        } elseif ($weather >= 10 && $weather < 15) {
+            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::ROCK);
+        } else {
+            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::CLASSICAL);
+        }
+
+        return $playlists;
     }
 
 }
