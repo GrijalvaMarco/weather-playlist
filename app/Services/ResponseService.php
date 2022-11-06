@@ -2,10 +2,26 @@
 
 namespace App\Services;
 use App\Http\Requests\WeatherGetRequest;
+use App\Repository\SpotifyRepositoryInterface;
 class ResponseService
 {
-    public static function format(WeatherGetRequest $request)
+//     private $repository;
+  
+//    public function __construct(SpotifyRepositoryInterface $repository)
+//    {
+//        $this->repository = $repository;
+//    }
+    public static function format(WeatherGetRequest $request, SpotifyRepositoryInterface $repository)
     {
+        $dataFetch = new DataFetchService($repository);
+        $weather_response = $dataFetch->getCurrentWeather($request);
+
+        $response = [
+            'success' => true,
+            'data' => $weather_response,
+            'code' => 200
+            ];
+
         // $dataFetch = new DataFetchService();
         // $response = [];
         // $weather_response = $dataFetch->getCurrentWeather($request);
@@ -27,10 +43,11 @@ class ResponseService
         //         ];
         // }
 
-        $spotifyRequest = new SpotifyService();
-        $token = $spotifyRequest->getToken();
+        // $spotifyRequest = new SpotifyService();
+        // $token = $spotifyRequest->getToken();
 
-        $response = $spotifyRequest->getCategories($token);
+        // // $response = $spotifyRequest->getCategories($token);
+        // $response = $spotifyRequest->getPlaylists($token,"0JQ5DAqbMKFA6SOHvT3gck");
 
         return $response;
         

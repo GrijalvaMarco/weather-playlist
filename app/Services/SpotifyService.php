@@ -9,7 +9,6 @@ class SpotifyService
 {
     private $client;
     private $spotify_url;
-
     public function __construct()
     {
         $this->client = new Client();
@@ -46,6 +45,33 @@ class SpotifyService
     public function getCategories($token)
     {       
         $url =$this->spotify_url."browse/categories?limit=50";
+
+        try {
+            $response = json_decode($this->client->get($url,
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$token,
+                    'Content-Type' => 'application/json'
+                ]
+            ])->getBody());
+            
+            $response = ['success' => true, 'data' => $response, 'code' => 200];
+        } catch (RequestException $e) {
+            $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
+        }
+        return $response;
+    }
+
+    /**
+     * Get playlists from spotify api.
+     *@param $token
+     *@param string $category_sid = spotify_id of the category
+     * @return array
+     */
+
+    public function getPlaylists($token, $category_sid)
+    {       
+        $url = $this->spotify_url."browse/categories/".$category_sid."/playlists";
 
         try {
             $response = json_decode($this->client->get($url,
