@@ -32,7 +32,7 @@ class DataFetchService
         
         try {
             $response = json_decode($client->get($url)->getBody());
-            $response = ['success' => true, 'data' => $response->main->temp, 'code' => 200];
+            $response = ['success' => true, 'data' => $response, 'code' => 200];
         } catch (RequestException $e) {
             // throw new Exception($e);
             $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
