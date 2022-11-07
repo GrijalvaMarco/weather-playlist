@@ -1,0 +1,68 @@
+{
+	"variables": [],
+	"info": {
+		"name": "weather-playlist",
+		"_postman_id": "d8ae32dd-589a-80a5-3e1b-82b4e8e9046a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sync Spotify data",
+			"request": {
+				"url": "http://localhost:8000/api/spotify/sync",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Weather",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8000/api/playlist/recommended?city=zapopan",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"playlist",
+						"recommended"
+					],
+					"query": [
+						{
+							"key": "city",
+							"value": "zapopan",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "lat",
+							"value": "20.6746601",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						},
+						{
+							"key": "lon",
+							"value": "-103.3350782",
+							"equals": true,
+							"description": "",
+							"disabled": true
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
