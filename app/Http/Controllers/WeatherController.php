@@ -24,8 +24,6 @@ class WeatherController extends Controller
     public function index(WeatherGetRequest $request)
     {
         $response = ResponseService::format($request,$this->repository);
-        // $response = $this->repository->all();
-        // echo($data);
-        return response()->json($response,200);
+        return response()->json($response,$response['code']);
     }
 }
