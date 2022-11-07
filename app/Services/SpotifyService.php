@@ -138,7 +138,7 @@ class SpotifyService
                 $tracks = $this->getTracks($token, $playlist->id);
                 
                 $playlist_data = [
-                    'category_id' => 1,
+                    'category_id' => $category->id,
                     'spotify_id' => $playlist->id,
                     'name' => $playlist->name,
                     'description' => $playlist->description,
