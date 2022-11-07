@@ -7,11 +7,15 @@ use App\Repository\SpotifyRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use App\Http\Requests\WeatherGetRequest;
+use Exception;
+
 class DataFetchService
 {
-    private $client;
     private $repository;
   
+    /**
+     *@method Inject spotify repository in order to call query methods
+     */
    public function __construct(SpotifyRepositoryInterface $repository)
    {
        $this->repository = $repository;
@@ -42,15 +46,19 @@ class DataFetchService
      */
     public function getRecommendedPlaylist($weather)
     {
-        if ($weather > 30) {
-            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::PARTY);
-        } elseif ($weather >= 15 && $weather <= 30) {
-            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::POP);
-        } elseif ($weather >= 10 && $weather < 15) {
-            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::ROCK);
-        } else {
-            $playlists = $this->repository->getRecommendedPlaylist(CategoryType::CLASSICAL);
-        }
+        try {
+            if ($weather > 30) {
+                $playlists = $this->repository->getRecommendedPlaylist(CategoryType::PARTY);
+            } elseif ($weather >= 15 && $weather <= 30) {
+                $playlists = $this->repository->getRecommendedPlaylist(CategoryType::POP);
+            } elseif ($weather >= 10 && $weather < 15) {
+                $playlists = $this->repository->getRecommendedPlaylist(CategoryType::ROCK);
+            } else {
+                $playlists = $this->repository->getRecommendedPlaylist(CategoryType::CLASSICAL);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }  
 
         return $playlists;
     }

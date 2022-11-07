@@ -18,7 +18,6 @@ class CreateTracksTable extends Migration
             $table->unsignedBigInteger('playlist_id');
             $table->string('spotify_id');
             $table->string('name');
-            $table->string('release_date');
             $table->string('href');
             $table->json('artists');
             $table->foreign('playlist_id')->references('id')->on('playlists');

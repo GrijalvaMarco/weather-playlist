@@ -2,17 +2,26 @@
 
 namespace App\Services;
 
+use App\Models\Category;
+use App\Models\Playlist;
+use App\Repository\SpotifyRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use App\Http\Requests\WeatherGetRequest;
+use Exception;
 class SpotifyService
 {
     private $client;
     private $spotify_url;
-    public function __construct()
+    private $repository;
+  
+    /**
+     *@method Inject spotify repository in order to call query methods
+     */
+    public function __construct(SpotifyRepositoryInterface $repository)
     {
         $this->client = new Client();
         $this->spotify_url = "https://api.spotify.com/v1/";
+        $this->repository = $repository;
     }
 
     public function getToken()
@@ -36,8 +45,7 @@ class SpotifyService
             
             $response = $token;
         } catch (RequestException $e) {
-            // throw new Exception($e);
-            $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
+            throw new Exception($e);
         }
         return $response;
     }
@@ -57,7 +65,7 @@ class SpotifyService
             
             $response = ['success' => true, 'data' => $response, 'code' => 200];
         } catch (RequestException $e) {
-            $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
+            throw new Exception($e);
         }
         return $response;
     }
@@ -71,7 +79,7 @@ class SpotifyService
 
     public function getPlaylists($token, $category_sid)
     {       
-        $url = $this->spotify_url."browse/categories/".$category_sid."/playlists";
+        $url = $this->spotify_url."browse/categories/".$category_sid."/playlists?limit=1";
 
         try {
             $response = json_decode($this->client->get($url,
@@ -81,12 +89,76 @@ class SpotifyService
                     'Content-Type' => 'application/json'
                 ]
             ])->getBody());
-            
-            $response = ['success' => true, 'data' => $response, 'code' => 200];
+            $response = $response->playlists->items;
         } catch (RequestException $e) {
-            $response = ['success' => false, 'message' => $e->getMessage(), 'code' => $e->getCode()];
+            throw new Exception($e);
         }
         return $response;
+    }
+
+    /**
+     * Get Tracks of a playlist.
+     *@param $token
+     *@param string $playlist_sid = spotify_id of the playlist
+     * @return array
+     */
+    public function getTracks($token, $playlist_sid)
+    {
+        $url = $this->spotify_url."playlists/".$playlist_sid;
+
+        try {
+            $response = json_decode($this->client->get($url,
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$token,
+                    'Content-Type' => 'application/json'
+                ]
+            ])->getBody());
+            $response = $response->tracks->items;
+        } catch (RequestException $e) {
+            throw new Exception($e);
+        }
+        return $response;
+    }
+
+
+    /**
+     * Get Playlists and tracks from spotify api and save in database or update.
+     * This method could be called from a task scheduled
+     * @return array
+     */
+    public function sync(SpotifyRepositoryInterface $repository){
+        $token =  $this->getToken();
+        $local_categories = Category::select('id','name','spotify_id')->where('status',true)->get();
+       
+        foreach ($local_categories as $category) {
+            $playlists = $this->getPlaylists($token,$category->spotify_id);
+
+            foreach ($playlists as $playlist) {
+                $tracks = $this->getTracks($token, $playlist->id);
+                
+                $playlist_data = [
+                    'category_id' => 1,
+                    'spotify_id' => $playlist->id,
+                    'name' => $playlist->name,
+                    'description' => $playlist->description,
+                    'href' => $playlist->href,
+                    'tracks' => json_encode($playlist->tracks)
+                ];
+                $playlist_response = $this->repository->insertPlaylist($playlist_data);
+
+                if($playlist_response['wasRecentlyCreated']) {
+                    $track_data = [
+                        'playlist_id' => $playlist_response['id'],
+                        'tracks' => $tracks
+                    ];
+                    $this->repository->insertTracks($track_data);
+                }
+                
+            }
+        }   
+
+        return ['success' => true, 'code' => 200];
     }
 
 }

@@ -18,7 +18,6 @@ class Track extends Model
         'spotify_id',
         'name',
         'href',
-        'release_date',
         'artists',
         'playlist_id'
     ];

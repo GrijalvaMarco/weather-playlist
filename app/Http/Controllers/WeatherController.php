@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Repository\SpotifyRepositoryInterface;
 use App\Services\ResponseService;
 use App\Http\Requests\WeatherGetRequest;
+use App\Services\SpotifyService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class WeatherController extends Controller
 {
