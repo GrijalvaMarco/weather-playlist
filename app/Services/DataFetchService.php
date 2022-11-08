@@ -16,18 +16,20 @@ class DataFetchService
     /**
      *@method Inject spotify repository in order to call query methods
      */
-   public function __construct(SpotifyRepositoryInterface $repository)
-   {
-       $this->repository = $repository;
-   }
+    public function __construct(SpotifyRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
     public function getCurrentWeather(WeatherGetRequest $request)
     {
         $client = new Client();
-        if(isset($request->city)){
-            $url = "https://api.openweathermap.org/data/2.5/weather?q=".$request->city."&units=metric&appid=".env('OPENWEATHER_API_KEY');
+        if (isset($request->city)) {
+            $url = "https://api.openweathermap.org/data/2.5/weather?q="
+            .$request->city."&units=metric&appid=".env('OPENWEATHER_API_KEY');
         } else {
-            $url = "https://api.openweathermap.org/data/2.5/weather?lat=".$request->lat."&lon=".$request->lon."&units=metric&appid=".env('OPENWEATHER_API_KEY');
+            $url = "https://api.openweathermap.org/data/2.5/weather?lat="
+            .$request->lat."&lon=".$request->lon."&units=metric&appid=".env('OPENWEATHER_API_KEY');
         }
         
         try {
@@ -58,9 +60,7 @@ class DataFetchService
             }
         } catch (Exception $e) {
             throw new Exception($e);
-        }  
-
+        }
         return $playlists;
     }
-
 }

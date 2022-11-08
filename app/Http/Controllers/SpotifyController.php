@@ -9,10 +9,10 @@ class SpotifyController extends Controller
 {
     private $repository;
   
-   public function __construct(SpotifyRepositoryInterface $repository)
-   {
-       $this->repository = $repository;
-   }
+    public function __construct(SpotifyRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
    /**
      * @OA\Get(
@@ -32,9 +32,9 @@ class SpotifyController extends Controller
      */
     public function sync()
     {
-        $service =  new SpotifyService($this->repository);
+        $service = new SpotifyService($this->repository);
         $response = $service->sync($this->repository);
 
-        return response()->json($response,200);
+        return response()->json($response, 200);
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Track;
 use App\Repository\SpotifyRepositoryInterface;
 use Illuminate\Support\Collection;
 use Exception;
+
 class SpotifyRepository extends BaseRepository implements SpotifyRepositoryInterface
 {
 
@@ -16,33 +17,30 @@ class SpotifyRepository extends BaseRepository implements SpotifyRepositoryInter
     *
     * @param Category $model
     */
-   public function __construct(Category $model)
-   {
-       parent::__construct($model);
-   }
+    public function __construct(Category $model)
+    {
+        parent::__construct($model);
+    }
 
    /**
     * @return Collection
     */
-   public function all(): Collection
-   {
-       return $this->model->with('playlists','playlists.tracks')->get();
-   }
+    public function all(): Collection
+    {
+        return $this->model->with('playlists', 'playlists.tracks')->get();
+    }
 
-   public function getRecommendedPlaylist($category_id)
-   {
-        return Playlist::select('id','spotify_id','name','description','href')->inRandomOrder()
-        ->where('category_id',$category_id)->with('tracks')->first();
-   }
+    public function getRecommendedPlaylist($category_id)
+    {
+        return Playlist::select('id', 'spotify_id', 'name', 'description', 'href')->inRandomOrder()
+        ->where('category_id', $category_id)->with('tracks')->first();
+    }
 
-    /**
-    * @return 
-    */
-   public function insertPlaylist($data)
-   {
-    $playlist = Playlist::firstOrCreate($data);
-    return ['wasRecentlyCreated' => $playlist->wasRecentlyCreated, 'id' => $playlist->id];
-   }
+    public function insertPlaylist($data)
+    {
+        $playlist = Playlist::firstOrCreate($data);
+        return ['wasRecentlyCreated' => $playlist->wasRecentlyCreated, 'id' => $playlist->id];
+    }
 
    /**
     * @return void

@@ -13,10 +13,10 @@ class WeatherController extends Controller
 {
     private $repository;
   
-   public function __construct(SpotifyRepositoryInterface $repository)
-   {
-       $this->repository = $repository;
-   }
+    public function __construct(SpotifyRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
     /**
      * @OA\Get(
      *    path="/playlist/recommended",
@@ -46,7 +46,7 @@ class WeatherController extends Controller
      */
     public function index(WeatherGetRequest $request)
     {
-        $response = ResponseService::format($request,$this->repository);
-        return response()->json($response,$response['code']);
+        $response = ResponseService::format($request, $this->repository);
+        return response()->json($response, $response['code']);
     }
 }
