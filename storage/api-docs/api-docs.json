@@ -1,0 +1,124 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Weather Playlist Api Documentation",
+        "description": "Neubox challenge2",
+        "contact": {
+            "name": "Marco Grijalva",
+            "email": "marco.developer19@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/spotify/sync": {
+            "get": {
+                "tags": [
+                    "Spotify"
+                ],
+                "summary": "Synchronize spotify data",
+                "description": "Request to spotify's api and save playlists and tracks into database",
+                "operationId": "sync",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": "200"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/playlist/recommended": {
+            "get": {
+                "tags": [
+                    "Playlists"
+                ],
+                "summary": "Get playlist and tracks depends the weather",
+                "description": "Get playlist and tracks sending a city or coordinates",
+                "operationId": "index",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "city is required or coordinates instead",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "latitude required if city is not present",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "longitude required if city is not present",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": "200"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "current_weather": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": "22.86"
+                                        },
+                                        "recommended_playlist": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
