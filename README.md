@@ -73,7 +73,7 @@ php artisan serve --port=8000
 ```
 Now the app is running in http://localhost:8000/
 
-## Usage
+## Usage & Documentation
 After run with sail or artisan we need to sync data from spotify api.
 Execute a reques to:
 ```sh
@@ -90,3 +90,4 @@ http://localhost:8000/api/playlist/recommended?lat=20.6746601&lon=-103.3350782
 ```
 
 For a better undestanding of how works the endpoints see the postman folder located at **weather-playlist/postman** 
+or see **http://localhost:8000/api/documentation** if you wish try by swagger
