@@ -51,7 +51,7 @@ class SpotifyService
         $url =$this->spotify_url."browse/categories?limit=50";
 
         try {
-            $response = json_decode($this->client->post($url, ['headers' => ['Authorization' => 'Bearer '.$token,
+            $response = json_decode($this->client->get($url, ['headers' => ['Authorization' => 'Bearer '.$token,
             'Content-Type' => 'application/json']])->getBody());
             
             $response = ['success' => true, 'data' => $response, 'code' => 200];
@@ -73,7 +73,7 @@ class SpotifyService
         $url = $this->spotify_url."browse/categories/".$category_sid."/playlists?limit=1";
 
         try {
-            $response = json_decode($this->client->post($url, ['headers' => ['Authorization' => 'Bearer '.$token,
+            $response = json_decode($this->client->get($url, ['headers' => ['Authorization' => 'Bearer '.$token,
             'Content-Type' => 'application/json']])->getBody());
 
             $response = $response->playlists->items;
@@ -94,7 +94,7 @@ class SpotifyService
         $url = $this->spotify_url."playlists/".$playlist_sid;
 
         try {
-            $response = json_decode($this->client->post($url, ['headers' => ['Authorization' => 'Bearer '.$token,
+            $response = json_decode($this->client->get($url, ['headers' => ['Authorization' => 'Bearer '.$token,
             'Content-Type' => 'application/json']])->getBody());
             $response = $response->tracks->items;
         } catch (RequestException $e) {
