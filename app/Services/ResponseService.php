@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\WeatherGetRequest;
-use App\Models\ClientRequest;
+use App\Jobs\SendClientRequest;
 use App\Repository\SpotifyRepositoryInterface;
 
 class ResponseService
@@ -27,7 +27,7 @@ class ResponseService
                 'playlist_recommended_id' => $recommended_playlist->id
                 ];
                 
-            ClientRequest::create($client_request);
+            dispatch(new SendClientRequest($client_request));
 
             //Request Response
             $response = [
