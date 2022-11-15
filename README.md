@@ -91,3 +91,9 @@ http://localhost:8000/api/playlist/recommended?lat=20.6746601&lon=-103.3350782
 
 For a better undestanding of how works the endpoints see the postman folder located at **weather-playlist/postman** 
 or see **http://localhost:8000/api/documentation** if you wish try by swagger
+
+## Tests
+Run unit tests:
+```sh
+php artisan test
+```
